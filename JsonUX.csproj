@@ -45,12 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="json\Parse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Samples\deployment-variables-simple.json" />
-    <None Include="Samples\deployment-variables-extended.json" />
+    <None Include="samples\deployment-variables-simple.json" />
+    <None Include="samples\deployment-variables-extended.json" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

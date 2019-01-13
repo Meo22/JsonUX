@@ -31,27 +31,32 @@
 			this.txtJsonInput = new System.Windows.Forms.TextBox();
 			this.txtOutput = new System.Windows.Forms.TextBox();
 			this.btnConvert = new System.Windows.Forms.Button();
+			this.ddlFiles = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
 			// 
 			// txtJsonInput
 			// 
 			this.txtJsonInput.Location = new System.Drawing.Point(12, 56);
+			this.txtJsonInput.MaxLength = 65536;
 			this.txtJsonInput.Multiline = true;
 			this.txtJsonInput.Name = "txtJsonInput";
-			this.txtJsonInput.Size = new System.Drawing.Size(400, 382);
+			this.txtJsonInput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.txtJsonInput.Size = new System.Drawing.Size(542, 532);
 			this.txtJsonInput.TabIndex = 0;
 			// 
 			// txtOutput
 			// 
-			this.txtOutput.Location = new System.Drawing.Point(499, 56);
+			this.txtOutput.Location = new System.Drawing.Point(641, 56);
+			this.txtOutput.MaxLength = 65536;
 			this.txtOutput.Multiline = true;
 			this.txtOutput.Name = "txtOutput";
-			this.txtOutput.Size = new System.Drawing.Size(400, 382);
+			this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.txtOutput.Size = new System.Drawing.Size(542, 532);
 			this.txtOutput.TabIndex = 1;
 			// 
 			// btnConvert
 			// 
-			this.btnConvert.Location = new System.Drawing.Point(418, 223);
+			this.btnConvert.Location = new System.Drawing.Point(560, 288);
 			this.btnConvert.Name = "btnConvert";
 			this.btnConvert.Size = new System.Drawing.Size(75, 23);
 			this.btnConvert.TabIndex = 2;
@@ -59,11 +64,21 @@
 			this.btnConvert.UseVisualStyleBackColor = true;
 			this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
 			// 
+			// ddlFiles
+			// 
+			this.ddlFiles.FormattingEnabled = true;
+			this.ddlFiles.Location = new System.Drawing.Point(13, 29);
+			this.ddlFiles.Name = "ddlFiles";
+			this.ddlFiles.Size = new System.Drawing.Size(541, 21);
+			this.ddlFiles.TabIndex = 3;
+			this.ddlFiles.SelectedIndexChanged += new System.EventHandler(this.ddlFiles_SelectedIndexChanged);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(912, 450);
+			this.ClientSize = new System.Drawing.Size(1198, 602);
+			this.Controls.Add(this.ddlFiles);
 			this.Controls.Add(this.btnConvert);
 			this.Controls.Add(this.txtOutput);
 			this.Controls.Add(this.txtJsonInput);
@@ -80,6 +95,7 @@
 		private System.Windows.Forms.TextBox txtJsonInput;
 		private System.Windows.Forms.TextBox txtOutput;
 		private System.Windows.Forms.Button btnConvert;
+		private System.Windows.Forms.ComboBox ddlFiles;
 	}
 }
 

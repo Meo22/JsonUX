@@ -1,0 +1,40 @@
+[
+	{
+		"Name": "ConnectionString",
+		"Value": "data source=dev",
+		"Environment": [
+			"Development"
+		]
+	},
+	{
+		"Name": "ConnectionString",
+		"Value": "data source=qa",
+		"Environment": [
+			"QA"
+		]
+	},
+	{
+		"Name": "ConnectionString",
+		"Value": "data source=prod",
+		"Environment": [
+			"Production"
+		]
+	},
+	{
+		"Name": "API_Weather_Url",
+		"Value": "https://",
+		"Description": null,
+		"Environment": [
+			"Development",
+			"QA"
+		]
+	},
+	{
+		"Name": "API_Weather_Url",
+		"Value": "https://",
+		"Description": null,
+		"Environment": [
+			"Production"
+		]
+	}
+]

@@ -1,0 +1,4 @@
+{
+	"ConnectionString": "data source=dev",
+	"API_Weather_Url": "https://"
+}

@@ -25,12 +25,12 @@ namespace JsonUX.Json
 		/// <returns>A dictionary with string values</returns>
 		public static Dictionary<string, string> ParseSimple(string json, string entryPoint)
 		{
-			if(!string.IsNullOrEmpty(entryPoint))
+			if (!string.IsNullOrEmpty(entryPoint))
 			{
 				var _entryPoints = entryPoint.Split('/');
 
 				var parsedJson = JObject.Parse(json);
-				
+
 				foreach (var _entryPoint in _entryPoints)
 				{
 					parsedJson = (JObject)parsedJson[entryPoint];
@@ -41,6 +41,118 @@ namespace JsonUX.Json
 			}
 
 			return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+		}
+
+		public static string[] ParseExtended(string json) => ParseExtended(json, null);
+
+		public static string[] ParseExtended(string json, string entryPoint)
+		{
+			var ret = new List<string>();
+
+			#region Set Json to entryPoint
+			if (!string.IsNullOrEmpty(entryPoint))
+			{
+				var _entryPoints = entryPoint.Split('/');
+
+				var parsedJson = JObject.Parse(json);
+
+				foreach (var _entryPoint in _entryPoints)
+				{
+					parsedJson = (JObject)parsedJson[entryPoint];
+				}
+
+				var results = parsedJson.Children();
+				json = JsonConvert.SerializeObject(results);
+			}
+			#endregion
+
+			dynamic deserializedJson = Deserialize(json);
+
+			foreach (object property in deserializedJson)
+			{
+				if (property is JObject jo)
+				{
+					ret.AddRange(GetJObject(jo));
+				}
+				else if (property is JToken jp)
+				{
+					ret.AddRange(GetJToken(jp));
+				}
+				else
+				{
+					ret.Add($"Err: Type not implemented: {property.GetType()}");
+				}
+
+			}
+
+			return ret.ToArray();
+		}
+
+		private static IList<string> GetJObject(JObject jObject)
+		{
+			var ret = new List<string>();
+
+			if (jObject.HasValues)
+			{
+				foreach (JToken child in jObject.Children())
+				{
+					ret.AddRange(GetJToken(child));
+				}
+			}
+
+			return ret;
+		}
+
+		private static IList<string> GetJToken(JToken jToken, int level = 1)
+		{
+			var ret = new List<string>();
+			
+			if (jToken is JProperty jp)
+			{
+				ret.Add($"{jp.Name}");
+
+				ret.AddRange(GetJValueOrJArray(jp.Value, level));
+			}
+			else
+			{
+				ret.AddRange(GetJValueOrJArray(jToken, level));
+			}
+
+			return ret;
+		}
+
+		private static IList<string> GetJValueOrJArray(JToken jToken, int level)
+		{
+			var ret = new List<string>();
+
+			if (jToken is JValue jv)
+			{
+				ret.Add($"{new string('\t', level)}{jv.Value}");
+			}
+			else if (jToken is JArray)
+			{
+				foreach (var a in jToken)
+				{
+					ret.AddRange(GetJToken(a, level));
+				}
+				level++;
+
+			}
+			else if (jToken is JObject jo)
+			{
+				ret.AddRange(GetJObject(jo));
+			}
+			else
+			{
+				ret.Add($"not JValue/JArray/JObject: {jToken.GetType()}");
+			}
+
+			return ret;
+		}
+
+		private static dynamic Deserialize(string json)
+		{
+			return JsonConvert.DeserializeObject(json);
 		}
 	}
 }

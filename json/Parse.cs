@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JsonUX.Json
 {
-	public class Parse
+	public static class Parse
 	{
 		/// <summary>
 		/// Parses a simple json file and returns values as string.

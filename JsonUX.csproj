@@ -50,8 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="samples\deployment-variables-simple.json" />
-    <None Include="samples\deployment-variables-extended.json" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

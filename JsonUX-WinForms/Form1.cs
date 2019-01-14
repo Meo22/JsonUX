@@ -15,6 +15,16 @@ namespace JsonUX_WinForms
 	{
 		static readonly string SamplesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "samples");
 
+		static IList<string> GetSamples()
+		{
+			return Directory.GetFiles(SamplesPath).Select(f => Path.GetFileName(f)).ToList();
+		}
+
+		static string LoadFile(string file)
+		{
+			return File.ReadAllText(Path.Combine(SamplesPath, file));
+		}
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -22,21 +32,9 @@ namespace JsonUX_WinForms
 			ddlFiles.DataSource = GetSamples();
 		}
 
-		IList<string> GetSamples()
-		{
-			return Directory.GetFiles(SamplesPath).Select(f => Path.GetFileName(f)).ToList();
-		}
-
-		void LoadFile()
-		{
-			var selectedFile = ddlFiles.SelectedValue.ToString();
-
-			txtJsonInput.Text = File.ReadAllText(Path.Combine(SamplesPath, selectedFile));
-		}
-
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			LoadFile();
+			txtJsonInput.Text = LoadFile(ddlFiles.SelectedValue.ToString());
 		}
 
 		private void btnConvert_Click(object sender, EventArgs e)
@@ -55,7 +53,7 @@ namespace JsonUX_WinForms
 
 		private void ddlFiles_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			LoadFile();
+			txtJsonInput.Text = LoadFile(ddlFiles.SelectedValue.ToString());
 		}
 	}
 }

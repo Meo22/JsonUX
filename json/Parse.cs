@@ -88,7 +88,7 @@ namespace JsonUX.Json
 			return ret.ToArray();
 		}
 
-		private static IList<string> GetJObject(JObject jObject)
+		private static IList<string> GetJObject(JObject jObject, int level = 0)
 		{
 			var ret = new List<string>();
 
@@ -96,20 +96,20 @@ namespace JsonUX.Json
 			{
 				foreach (JToken child in jObject.Children())
 				{
-					ret.AddRange(GetJToken(child));
+					ret.AddRange(GetJToken(child, level));
 				}
 			}
 
 			return ret;
 		}
 
-		private static IList<string> GetJToken(JToken jToken, int level = 1)
+		private static IList<string> GetJToken(JToken jToken, int level = 0)
 		{
 			var ret = new List<string>();
 			
 			if (jToken is JProperty jp)
 			{
-				ret.Add($"{jp.Name}");
+				ret.Add($"{new string('\t', level)}{jp.Name}");
 
 				ret.AddRange(GetJValueOrJArray(jp.Value, level));
 			}
@@ -131,16 +131,16 @@ namespace JsonUX.Json
 			}
 			else if (jToken is JArray)
 			{
+				level++;
 				foreach (var a in jToken)
 				{
 					ret.AddRange(GetJToken(a, level));
 				}
-				level++;
 
 			}
 			else if (jToken is JObject jo)
 			{
-				ret.AddRange(GetJObject(jo));
+				ret.AddRange(GetJObject(jo, level++));
 			}
 			else
 			{

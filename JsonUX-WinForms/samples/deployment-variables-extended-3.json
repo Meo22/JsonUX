@@ -1,0 +1,60 @@
+{
+	"ProjectId": "Sample-Project-1",
+	"Variables": [
+		{
+			"Name": "ConnectionString",
+			"Value": "data source=dev",
+			"Environment": [
+				"Development"
+			],
+			"Recursive Object 1": {
+				"Name": "ConnectionString",
+				"Value": "data source=dev",
+				"Environment": [
+					"Development"
+				],
+				"Recursive Object 2": {
+					"Name": "ConnectionString",
+					"Value": "data source=dev",
+					"Environment": [
+						"Development"
+					],
+					"Recursive Object 1": {
+
+					}
+				}
+			}
+		},
+		{
+			"Name": "ConnectionString",
+			"Value": "data source=qa",
+			"Environment": [
+				"QA"
+			]
+		},
+		{
+			"Name": "ConnectionString",
+			"Value": "data source=prod",
+			"Environment": [
+				"Production"
+			]
+		},
+		{
+			"Name": "API_Weather_Url",
+			"Value": "https://",
+			"Description": null,
+			"Environment": [
+				"Development",
+				"QA"
+			]
+		},
+		{
+			"Name": "API_Weather_Url",
+			"Value": "https://",
+			"Description": null,
+			"Environment": [
+				"Production"
+			]
+		}
+	]
+}

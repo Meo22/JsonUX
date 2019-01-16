@@ -70,12 +70,16 @@ namespace JsonUX.Json
 
 			foreach (object property in deserializedJson)
 			{
-				if (property is JObject jo)
+				if (property is JObject)
 				{
+					var jo = (JObject)property;
+
 					ret.AddRange(GetJObject(jo));
 				}
-				else if (property is JToken jp)
+				else if (property is JToken)
 				{
+					var jp = (JToken)property;
+
 					ret.AddRange(GetJToken(jp));
 				}
 				else
@@ -107,8 +111,10 @@ namespace JsonUX.Json
 		{
 			var ret = new List<string>();
 			
-			if (jToken is JProperty jp)
+			if (jToken is JProperty)
 			{
+				var jp = (JProperty)jToken;
+
 				ret.Add($"{new string('\t', level)}{jp.Name}");
 
 				ret.AddRange(GetJValueOrJArray(jp.Value, level));
@@ -125,8 +131,10 @@ namespace JsonUX.Json
 		{
 			var ret = new List<string>();
 
-			if (jToken is JValue jv)
+			if (jToken is JValue)
 			{
+				var jv = (JValue)jToken;
+
 				ret.Add($"{new string('\t', level)}{jv.Value}");
 			}
 			else if (jToken is JArray)
@@ -138,8 +146,10 @@ namespace JsonUX.Json
 				}
 
 			}
-			else if (jToken is JObject jo)
+			else if (jToken is JObject)
 			{
+				var jo = (JObject)jToken;
+
 				ret.AddRange(GetJObject(jo, level++));
 			}
 			else

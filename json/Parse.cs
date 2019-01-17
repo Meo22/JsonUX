@@ -11,54 +11,33 @@ namespace JsonUX.Json
 	public static class Parse
 	{
 		/// <summary>
-		/// Parses a simple json file and returns values as string.
-		/// </summary>
-		/// <param name="json"></param>
-		/// <returns>A dictionary with string values</returns>
-		public static Dictionary<string, string> ParseSimple(string json) => ParseSimple(json, null);
-
-		/// <summary>
-		/// Parses a simple json file and returns values as string. If variables are in sub-level, <paramref name="entryPoint"/> can be specified.
+		/// Parses a simple json file and returns values as string array.
 		/// </summary>
 		/// <param name="json"></param>
 		/// <param name="entryPoint"></param>
 		/// <returns>A dictionary with string values</returns>
-		public static Dictionary<string, string> ParseSimple(string json, string entryPoint)
-		{
-			if (!string.IsNullOrEmpty(entryPoint))
-			{
-				var _entryPoints = entryPoint.Split('/');
-
-				var parsedJson = JObject.Parse(json);
-
-				foreach (var _entryPoint in _entryPoints)
-				{
-					parsedJson = (JObject)parsedJson[entryPoint];
-				}
-
-				var results = parsedJson.Children();
-				json = JsonConvert.SerializeObject(results);
-			}
-
-			return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-		}
-
 		public static string[] ParseExtended(string json) => ParseExtended(json, null);
 
-		public static string[] ParseExtended(string json, string entryPoint)
+		/// <summary>
+		/// Parses a simple json file and returns values as string array. <paramref name="rootElement"/> can be defined as root element.
+		/// </summary>
+		/// <param name="json"></param>
+		/// <param name="rootElement"></param>
+		/// <returns>A dictionary with string values</returns>
+		public static string[] ParseExtended(string json, string rootElement)
 		{
 			var ret = new List<string>();
 
 			#region Set Json to entryPoint
-			if (!string.IsNullOrEmpty(entryPoint))
+			if (!string.IsNullOrEmpty(rootElement))
 			{
-				var _entryPoints = entryPoint.Split('/');
+				var _entryPoints = rootElement.Split('/');
 
 				var parsedJson = JObject.Parse(json);
 
 				foreach (var _entryPoint in _entryPoints)
 				{
-					parsedJson = (JObject)parsedJson[entryPoint];
+					parsedJson = (JObject)parsedJson[rootElement];
 				}
 
 				var results = parsedJson.Children();
@@ -70,17 +49,18 @@ namespace JsonUX.Json
 
 			foreach (object property in deserializedJson)
 			{
-				if (property is JObject)
-				{
-					var jo = (JObject)property;
+				var jo = property as JObject;
 
+				if (jo != null)
+				{
 					ret.AddRange(GetJObject(jo));
 				}
-				else if (property is JToken)
-				{
-					var jp = (JToken)property;
 
-					ret.AddRange(GetJToken(jp));
+				var jt = property as JToken;
+
+				if (jt != null)
+				{
+					ret.AddRange(GetJToken(jt));
 				}
 				else
 				{

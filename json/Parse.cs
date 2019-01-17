@@ -10,7 +10,7 @@ namespace JsonUX.Json
 {
 	public class Parse
 	{
-		private static bool EnableLog { get; set; } = true;
+		private static bool EnableLog { get; set; } = false;
 
 		IList<string> Result { get; set; }
 
@@ -68,16 +68,7 @@ namespace JsonUX.Json
 
 			foreach (object property in deserializedJson)
 			{
-				var jo = property as JObject;
-
-				if (jo != null)
-				{
-					AddJObject(jo);
-				}
-
-				var jt = property as JToken;
-
-				if (jt != null)
+				if (property is JToken jt)
 				{
 					AddJToken(jt);
 				}
@@ -89,54 +80,38 @@ namespace JsonUX.Json
 
 			return Result;
 		}
-
-		private void AddJObject(JObject jObject, int level = 0)
-		{
-			AddLog($"Enter AddJObject, level {level}");
-
-			if (jObject.HasValues)
-			{
-				level++;
-				foreach (JToken child in jObject.Children())
-				{
-					AddJToken(child, level);
-				}
-			}
-		}
-
+		
 		private void AddJToken(JToken jToken, int level = 0)
 		{
-			AddLog($"Enter GetJToken, level {level}");
-
-			if (jToken is JProperty)
+			//AddLog($"Enter AddJToken, level {level}");
+			
+			if(jToken is JObject jo)
 			{
-				AddLog($"Is JProperty");
+				AddLog($"Is JObject, level {level}");
 
-				var jp = (JProperty)jToken;
-
+				if (jo.HasValues)
+				{
+					foreach (JToken child in jo.Children())
+					{
+						AddJToken(child, level);
+					}
+				}
+			}
+			else if (jToken is JProperty jp)
+			{
+				AddLog($"Is JProperty, level {level}");
+				
 				Add($"{new string('\t', level)}{jp.Name}");
 
+				//level++;
+
+				AddJToken(jp.Value, level);
+			}
+			else if (jToken is JValue)
+			{
+				AddLog($"Is JValue, level {level}");
+				
 				level++;
-
-				AddJValueOrJArray(jp.Value, level);
-			}
-			else
-			{
-				AddLog($"Is {jToken.GetType()}");
-
-				AddJValueOrJArray(jToken, level);
-			}
-		}
-
-		private void AddJValueOrJArray(JToken jToken, int level)
-		{
-			var ret = new List<string>();
-
-			AddLog($"Enter GetJValueOrJArray, level {level}");
-
-			if (jToken is JValue)
-			{
-				AddLog($"Is JValue");
 
 				var jv = (JValue)jToken;
 
@@ -144,26 +119,17 @@ namespace JsonUX.Json
 			}
 			else if (jToken is JArray)
 			{
-				AddLog($"Is JArray");
+				AddLog($"Is JArray, level {level}");
 
 				level++;
 				foreach (var a in jToken)
 				{
 					AddJToken(a, level);
 				}
-
-			}
-			else if (jToken is JObject)
-			{
-				AddLog($"Is JObject");
-
-				var jo = (JObject)jToken;
-
-				AddJObject(jo, level++);
 			}
 			else
 			{
-				AddLog($"not JValue/JArray/JObject: {jToken.GetType()}");
+				AddLog($"Err: Type not implemented: {jToken.GetType()}");
 			}
 		}
 

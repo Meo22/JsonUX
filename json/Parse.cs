@@ -8,15 +8,36 @@ using System.Threading.Tasks;
 
 namespace JsonUX.Json
 {
-	public static class Parse
+	public class Parse
 	{
+		private static bool EnableLog { get; set; } = true;
+
+		IList<string> Result { get; set; }
+
+		public Parse()
+		{
+			Result = new List<string>();
+		}
+
+
+		private void AddLog(string element)
+		{
+			if(EnableLog)
+				Result.Add(element);
+		}
+
+		private void Add(string element)
+		{
+			Result.Add(element);
+		}
+
 		/// <summary>
 		/// Parses a simple json file and returns values as string array.
 		/// </summary>
 		/// <param name="json"></param>
 		/// <param name="entryPoint"></param>
 		/// <returns>A dictionary with string values</returns>
-		public static string[] ParseExtended(string json) => ParseExtended(json, null);
+		public IList<string> ParseExtended(string json) => ParseExtended(json, null);
 
 		/// <summary>
 		/// Parses a simple json file and returns values as string array. <paramref name="rootElement"/> can be defined as root element.
@@ -24,10 +45,8 @@ namespace JsonUX.Json
 		/// <param name="json"></param>
 		/// <param name="rootElement"></param>
 		/// <returns>A dictionary with string values</returns>
-		public static string[] ParseExtended(string json, string rootElement)
+		public IList<string> ParseExtended(string json, string rootElement)
 		{
-			var ret = new List<string>();
-
 			#region Set Json to entryPoint
 			if (!string.IsNullOrEmpty(rootElement))
 			{
@@ -53,91 +72,99 @@ namespace JsonUX.Json
 
 				if (jo != null)
 				{
-					ret.AddRange(GetJObject(jo));
+					AddJObject(jo);
 				}
 
 				var jt = property as JToken;
 
 				if (jt != null)
 				{
-					ret.AddRange(GetJToken(jt));
+					AddJToken(jt);
 				}
 				else
 				{
-					ret.Add($"Err: Type not implemented: {property.GetType()}");
+					AddLog($"Err: Type not implemented: {property.GetType()}");
 				}
-
 			}
 
-			return ret.ToArray();
+			return Result;
 		}
 
-		private static IList<string> GetJObject(JObject jObject, int level = 0)
+		private void AddJObject(JObject jObject, int level = 0)
 		{
-			var ret = new List<string>();
+			AddLog($"Enter AddJObject, level {level}");
 
 			if (jObject.HasValues)
 			{
+				level++;
 				foreach (JToken child in jObject.Children())
 				{
-					ret.AddRange(GetJToken(child, level));
+					AddJToken(child, level);
 				}
 			}
-
-			return ret;
 		}
 
-		private static IList<string> GetJToken(JToken jToken, int level = 0)
+		private void AddJToken(JToken jToken, int level = 0)
 		{
-			var ret = new List<string>();
-			
+			AddLog($"Enter GetJToken, level {level}");
+
 			if (jToken is JProperty)
 			{
+				AddLog($"Is JProperty");
+
 				var jp = (JProperty)jToken;
 
-				ret.Add($"{new string('\t', level)}{jp.Name}");
+				Add($"{new string('\t', level)}{jp.Name}");
 
-				ret.AddRange(GetJValueOrJArray(jp.Value, level));
+				level++;
+
+				AddJValueOrJArray(jp.Value, level);
 			}
 			else
 			{
-				ret.AddRange(GetJValueOrJArray(jToken, level));
-			}
+				AddLog($"Is {jToken.GetType()}");
 
-			return ret;
+				AddJValueOrJArray(jToken, level);
+			}
 		}
 
-		private static IList<string> GetJValueOrJArray(JToken jToken, int level)
+		private void AddJValueOrJArray(JToken jToken, int level)
 		{
 			var ret = new List<string>();
 
+			AddLog($"Enter GetJValueOrJArray, level {level}");
+
 			if (jToken is JValue)
 			{
+				AddLog($"Is JValue");
+
 				var jv = (JValue)jToken;
 
-				ret.Add($"{new string('\t', level)}{jv.Value}");
+				Add($"{new string('\t', level)}{jv.Value}");
 			}
 			else if (jToken is JArray)
 			{
+				AddLog($"Is JArray");
+
 				level++;
 				foreach (var a in jToken)
 				{
-					ret.AddRange(GetJToken(a, level));
+					AddJToken(a, level);
 				}
 
 			}
 			else if (jToken is JObject)
 			{
+				AddLog($"Is JObject");
+
 				var jo = (JObject)jToken;
 
-				ret.AddRange(GetJObject(jo, level++));
+				AddJObject(jo, level++);
 			}
 			else
 			{
-				ret.Add($"not JValue/JArray/JObject: {jToken.GetType()}");
+				AddLog($"not JValue/JArray/JObject: {jToken.GetType()}");
 			}
-
-			return ret;
 		}
 
 		private static dynamic Deserialize(string json)

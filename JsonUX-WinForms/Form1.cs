@@ -41,9 +41,9 @@ namespace JsonUX_WinForms
 		{
 			try
 			{
-				var dic = JsonUX.Json.Parse.ParseExtended(txtJsonInput.Text);
+				IList<string> data = new JsonUX.Json.Parse().ParseExtended(txtJsonInput.Text);
 
-				txtOutput.Text = string.Join(Environment.NewLine, dic);
+				txtOutput.Text = string.Join(Environment.NewLine, data);
 			}
 			catch(Exception ex)
 			{
